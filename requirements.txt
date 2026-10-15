@@ -1,0 +1,8 @@
+python-dotenv
+
+google-genai
+groq
+
+fastapi
+uvicorn
+
