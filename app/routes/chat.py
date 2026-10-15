@@ -1,12 +1,9 @@
 from fastapi import APIRouter
-from app.ai.models import models
+
+from app.ai.fallry import llm_with_retry_and_fallback
 
 router = APIRouter()
 
 @router.post("/llm")
 def llm_chat(prompt: str):
-
-    gemini_model = models.gemini_llm(prompt)
-
-    return gemini_model
-
+    return llm_with_retry_and_fallback(prompt)
