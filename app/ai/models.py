@@ -1,39 +1,47 @@
-from google import genai
-from groq import Groq
-from app.core.config import settings
-from app.ai.prompts.gemini_prompt import SYSTEM_PROMPT
+from pathlib import Path
 
+from google import genai
+from google.genai import types
+from groq import Groq
+
+from app.core.config import settings
+
+
+CHARACTER_PROMPT_PATH = Path(__file__).parent / "prompts" / "character.md"
+SYSTEM_PROMPT = CHARACTER_PROMPT_PATH.read_text(encoding="utf-8")
 
 
 class Models:
     def __init__(self):
-        gemini_client = Groq(api_key= settings.GROQ_API_KEY)
-        groq_client = genai.Client(api_key = settings.GEMINI_API_KEY)
+        self.gemini_client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        self.groq_client = Groq(api_key=settings.GROQ_API_KEY)
 
-    def gemini_llm(prompt: str):
-
-        response = client.interactions.create(
-            model= "gemini-3.5-flash-lite",
-            system_instruction= SYSTEM_PROMPT,
-            input = prompt
+    def gemini_llm(self, prompt: str):
+        response = self.gemini_client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                system_instruction=SYSTEM_PROMPT,
+            ),
         )
 
-        return response.output_text
+        return response.text
 
-
-    def groq_llm(prompt: str):
-
-        chat_completion = client.chat.completions.create(
+    def groq_llm(self, prompt: str):
+        chat_completion = self.groq_client.chat.completions.create(
+            model="qwen/qwen3.8-27b",
             messages=[
                 {
+                    "role": "system",
+                    "content": SYSTEM_PROMPT,
+                },
+                {
                     "role": "user",
-                    "content": "Explain the importance of fast language models",
-                }
+                    "content": prompt,
+                },
             ],
-            model="llama-3.3-70b-versatile",
         )
 
         return chat_completion.choices[0].message.content
 
 models = Models()
-

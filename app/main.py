@@ -7,13 +7,19 @@ app = FastAPI()
 def landing_page():
 
     return {
-        "message": "This is your backend"
+        "message": "Go to docs"
     }
 
 @app.get("/health")
 def health():
     return {
-        "status": "nalla iruken"
+        "status": "working"
+    }
+    
+@app.get("/models_list")
+def models_list():
+    return {
+        "models": ["gemini", "groq"]
     }
 
 app.include_router(chat.router)
