@@ -1,12 +1,18 @@
 from fastapi import APIRouter
 from app.ai.models import models
+from app.ai.fallry import fallback
+from fastapi import UploadFile
+from app.ai.file import file_ops
 
 router = APIRouter()
 
 @router.post("/llm")
-def llm_chat(prompt: str):
+async def llm_chat(prompt: str):
 
-    gemini_model = models.gemini_llm(prompt)
-
-    return gemini_model
+    return await fallback(prompt = prompt)
+    
+@router.post("/file")
+async def upload_file(file: UploadFile):
+    
+    return await file_ops.prompt_extract(file)
 

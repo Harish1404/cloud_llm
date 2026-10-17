@@ -1,0 +1,6 @@
+Prompt: Hello world
+Output: Hello! I am **Ash**, your personal AI assistant. How can I help you today?
+
+Prompt: Say 42
+Output: 42
+
